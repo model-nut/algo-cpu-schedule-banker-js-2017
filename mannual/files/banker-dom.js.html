@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>banker-dom.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/[banker-dom.js].html">[banker-dom.js]</a></li>
+                                <li><a href="../classes/[banker.js].html">[banker.js]</a></li>
+                                <li><a href="../classes/[common.js].html">[common.js]</a></li>
+                                <li><a href="../classes/[cpu-dom.js].html">[cpu-dom.js]</a></li>
+                                <li><a href="../classes/[cpu.js].html">[cpu.js]</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: banker-dom.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * author [luo0412]
+ * date [2016-12-21]
+ * description [银行家算法的dom操作]
+ * @class [banker-dom.js]
+ * @constructor
+ */
+
+// dom元素id如下
+// progress_num_input
+// resource_num_input
+// available_input
+// banker_demo_btn
+// banker_manual_btn
+// banker_rand_btn
+// start_progress_btn
+// request_vector_input
+// banker_request_btn
+// banker_table
+// banker_textarea
+
+$(document).ready(function() {
+    // 示例查找的监听器
+    $(&quot;#banker_demo_btn&quot;).click(function(){
+        bankerDemo1Init();
+        // bankerDemo2Init(); // 导入预存银行家算法的数据
+
+        updateBankerInput();
+        clearBankerTable(); // 清空表格
+        updateBankerTable();
+        updateBankerTextarea();
+
+        // console.log(&quot;安全序列数&quot; + SAFE_SEQUENCE_NUM);
+    });
+
+    // 手输查找的监听器
+    $(&quot;#banker_manual_btn&quot;).click(function(){
+        bankerManualInit(); // 根据input产生随机数组
+
+        // 注意，不需要更新input
+        clearBankerTable(); // 清空表格
+        updateBankerTable();
+        updateBankerTextarea();
+    });
+
+    // 随机查找的监听器
+    $(&quot;#banker_rand_btn&quot;).click(function(){
+        bankerRandInit(); // 随机生成初始化数据
+
+        updateBankerInput();
+        clearBankerTable(); // 清空表格
+        updateBankerTable();
+        updateBankerTextarea();
+    });
+
+    // 请求资源的监听器
+    $(&quot;#banker_request_btn&quot;).click(function() {
+        clearAvailableOfBankerTable(); // 清楚available列数据
+        addAvailableToBankerTable(); // 将计算出来的available数据添加到表格
+    });
+
+    /**
+     * @method [clearBankerTable]
+     * @description [清空银行家算法表格所有数据]
+     * @return {[type]} [description]
+     */
+    function clearBankerTable() {
+        $(&quot;#banker_table td&quot;).html(&quot;&quot;);
+    }
+
+    /**
+     * @method [clearAvailableOfBankerTable]
+     * @description [清空银行家算法表格中availa列数据]
+     * @return {[type]} [description]
+     */
+    function clearAvailableOfBankerTable() {
+        for(i=0; i&lt;6; i++) {
+            $(&quot;#banker_table tr:eq(&quot; + (i+1) + &quot;) td:eq(3)&quot;).html(&quot;&quot;);
+        }
+    }
+
+    /**
+     * @method [updateBankerInput]
+     * @description [初始化或更新input的值]
+     * @return {[type]} [description]
+     */
+    function updateBankerInput() {
+        $(&#x27;#progress_num_input&#x27;).val(PROGRESS_NUM);
+        $(&#x27;#resource_num_input&#x27;).val(RESOURCE_NUM);
+        $(&#x27;#available_input&#x27;).val(AVAILABLE.toString());
+    }
+
+    /**
+     * @method [updateBankerTextarea]
+     * @description [初始化或更新银行家算法的textarea]
+     * @return {[type]} [description]
+     */
+    function updateBankerTextarea() {
+        $(&#x27;#banker_textarea&#x27;).html(TEXTAREA_TXT);
+    }
+
+    /**
+     * @method [updateBankerTable]
+     * @description [初始化或更新银行家算法的table,显示max,allocation和need]
+     * @return {[type]} [description]
+     */
+    function updateBankerTable() {
+        // 显示max allocation need数据
+        for(var i=0; i&lt;PROGRESS_NUM; i++) {
+            $(&quot;#banker_table tr:eq(&quot; + (i+1) + &quot;) td:eq(0)&quot;).html(MAX[i].toString());
+            $(&quot;#banker_table tr:eq(&quot; + (i+1) + &quot;) td:eq(1)&quot;).html(ALLOCATION[i].toString());
+            $(&quot;#banker_table tr:eq(&quot; + (i+1) + &quot;) td:eq(2)&quot;).html(NEED[i].toString());
+        }
+    }
+
+    /**
+     * @method [convertVectorToArr]
+     * @description [将请求向量字符串转化成浮点型的数组]
+     * @param  {[type]} str [description]
+     * @return {[type]}     [description]
+     */
+    function convertVectorToArr(str) {
+        var s = str; // 值赋值
+        s = s.replace(/ /gi, &quot;&quot;); // replace不改变str本身, 所以需要赋值
+        s = s.replace(/,/gi, &quot;&quot;); // 去除空格和逗号
+        var arr = s.split(&quot;&quot;); // 拆成字符数组
+        arr = arrParseFloat(arr); // 转化成浮点型数组
+        return arr;
+    }
+
+    /**
+     * @method [addAvailableToBankerTable]
+     * @description [显示或更新银行家表格的available列]
+     * @return {[type]} [description]
+     */
+    function addAvailableToBankerTable() {
+        var progress = parseInt($(&quot;#start_progress_input&quot;).val()); // 获取请求进程号
+        // console.log(&quot;开始进程&quot; + progress);
+        var arr = convertVectorToArr($(&quot;#request_vector_input&quot;).val()); // 获取请求向量数组
+        // console.log(&quot;请求向量&quot; + arr);
+
+        // 请求向量与need和available的比较
+        // 如果不符合条件提示
+        for(var i=0; i&lt;RESOURCE_NUM; i++) {
+            if(arr[i] &gt; AVAILABLE_COPY[i]) {
+                alert(&quot;请求资源 &gt; 可用资源, 需等待&quot;);
+                return ;
+            }
+
+            if(arr[i] &gt; NEED[progress][i]) {
+                alert(&quot;请求资源 &gt; need, 不安全&quot;);
+                return ;
+            }
+        }
+
+        var tmpArr = []; // 存储一条安全序列 例1,2,3,4,5
+        for(i=0; i&lt; SAFE_SEQUENCE_NUM; i++) {
+            if(SAFE_SEQUENCE_ARR[i].toString().indexOf(progress + &quot;&quot;) === 0) {
+                // console.log(&quot;安全序列： &quot; + SAFE_SEQUENCE_ARR[i]);
+                tmpArr = SAFE_SEQUENCE_ARR[i];
+                // console.log(&quot;安全序列： &quot; + tmpArr);
+                break;
+            }
+        }
+
+        // 如果安全序列不存在
+        if(tmpArr.length === 0) {
+            alert(&quot;不存在安全序列&quot;);
+            return ;
+        } else {
+            alert(&quot;存在安全序列&quot; + tmpArr + &quot;如表格所示&quot;);
+            for(i=0; i&lt;PROGRESS_NUM; i++) {
+                $(&quot;#banker_table tr:eq(&quot; + (tmpArr[i] + 1) + &quot;) td:eq(3)&quot;).html( (i+1) + &quot;) &quot; + AVAILABLE_COPY);
+                for(var j=0; j&lt;RESOURCE_NUM; j++) {
+                    AVAILABLE_COPY[j] += ALLOCATION[tmpArr[i]][j];
+                }
+            }
+        }
+
+    }
+
+    /**
+     * @method [bankerDemo1Init]
+     * @description [导入教材示例1]
+     * @return {[type]} [description]
+     */
+    function bankerDemo1Init() {
+        var MAX1 = [[7, 5, 3],[3, 2, 2],[9, 0, 2],[2, 2, 2],[4, 3, 3]];
+        var ALLOCATION1 = [[0, 1, 0],[2, 0, 0],[3, 0, 2],[2, 1, 1],[0, 0, 2]];
+        var AVAILABLE1 = [3, 3, 2];
+
+        resetBankerGlobalVar();
+        PROGRESS_NUM = 5;
+        RESOURCE_NUM = 3;
+
+        MAX = cloneArr2D(MAX1);
+        ALLOCATION = cloneArr2D(ALLOCATION1);
+        AVAILABLE = cloneArr(AVAILABLE1);
+        AVAILABLE_COPY = cloneArr(AVAILABLE);
+        NEED = getSubArr2D(MAX, ALLOCATION);
+        // console.log(&quot;NEED&quot; + NEED);
+
+        ORDER_STR = getOrderStr(PROGRESS_NUM);
+        // console.log(&quot;ORDER_STR : &quot; + ORDER_STR);
+        generatePossOrderArr(&quot;&quot;); // 生成顺序序列
+        // displayArr2D(POSS_ORDER_ARR);
+        generateSafeSequence(); // 生成安全序列
+        // displayArr2D(SAFE_SEQUENCE_ARR);
+        // console.log(&quot;安全序列数&quot; + SAFE_SEQUENCE_NUM);
+
+    }
+
+    /**
+     * @method [bankerDemo2Init]
+     * @description [导入教材示例2]
+     * @return {[type]} [description]
+     */
+    function bankerDemo2Init() {
+        var MAX2 = [[8, 7, 5],[5, 2, 5],[6, 6, 2]];
+        var ALLOCATION2 = [[4, 2, 0],[2, 0, 2],[1, 3, 2]];
+        var AVAILABLE2 = [4, 3, 3];
+
+        resetBankerGlobalVar();
+        PROGRESS_NUM = 3;
+        RESOURCE_NUM = 3;
+
+        MAX = cloneArr2D(MAX2);
+        ALLOCATION = cloneArr2D(ALLOCATION2);
+        AVAILABLE = cloneArr(AVAILABLE2);
+        AVAILABLE_COPY = cloneArr(AVAILABLE);
+        NEED = getSubArr2D(MAX, ALLOCATION);
+        // console.log(&quot;NEED&quot; + NEED);
+
+        ORDER_STR = getOrderStr(PROGRESS_NUM);
+        // console.log(&quot;ORDER_STR : &quot; + ORDER_STR);
+        generatePossOrderArr(&quot;&quot;); // 生成顺序序列
+        // displayArr2D(POSS_ORDER_ARR);
+        generateSafeSequence(); // 生成安全序列
+        // displayArr2D(SAFE_SEQUENCE_ARR);
+        // console.log(&quot;安全序列数&quot; + SAFE_SEQUENCE_NUM);
+    }
+
+    /**
+     * @method [bankerManualInit]
+     * @description [指定资源数、进程数、AVAILABLE,其他数据随机]
+     * @return {[type]} [description]
+     */
+    function bankerManualInit() {
+        resetBankerGlobalVar();
+        PROGRESS_NUM = parseInt( $(&quot;#progress_num_input&quot;).val() );
+        RESOURCE_NUM = parseInt( $(&quot;#resource_num_input&quot;).val() );
+
+        generateRandMaxAllocation(); // 随机初始化MAX 和 ALLOCATION
+        AVAILABLE = convertVectorToArr($(&quot;#available_input&quot;).val()); // 获取AVAILABLE
+        AVAILABLE_COPY = cloneArr(AVAILABLE); // 拷贝AVAILABLE副本
+        NEED = getSubArr2D(MAX, ALLOCATION); // 获取NEED
+
+        ORDER_STR = getOrderStr(PROGRESS_NUM);
+        generatePossOrderArr(&quot;&quot;); // 生成顺序序列
+        generateSafeSequence(); // 生成安全序列
+    }
+
+    /**
+     * @method [bankerRandInit]
+     * @description [所有数据随机生成]
+     * @return {[type]} [description]
+     */
+    function bankerRandInit() {
+        resetBankerGlobalVar();
+        PROGRESS_NUM = getRandIntBetweenAB(3, 6);
+        RESOURCE_NUM = getRandIntBetweenAB(1, 4);
+
+        generateRandMaxAllocation();
+        generateRandAvailable();
+        AVAILABLE_COPY = cloneArr(AVAILABLE); // 拷贝AVAILABLE副本
+        NEED = getSubArr2D(MAX, ALLOCATION); // 获取NEED
+
+        ORDER_STR = getOrderStr(PROGRESS_NUM);
+        generatePossOrderArr(&quot;&quot;); // 生成顺序序列
+        generateSafeSequence(); // 生成安全序列
+    }
+
+
+}); // jq end
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>

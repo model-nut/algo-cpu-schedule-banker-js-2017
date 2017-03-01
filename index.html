@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>CPU调度算法与银行家算法的简单演示界面</title>
+  <link rel="stylesheet" href="">
+  <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+  <style>
+      body { font-family: "Consolas","微软雅黑"; /*margin-top: 50px;*/ }
+      table th, table td { text-align:center; }
+      ul.nav { margin-top: 20px; margin-bottom: 20px; }
+      .bordered { border-radius: 6px; border: 1px solid #DDDDDD; margin-bottom: 10px; }
+      textarea, form { margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#rr_panel" role="tab" data-toggle="tab">RR(时间片轮转)</a></li>
+  <li role="presentation"><a href="#fcfs_panel" role="tab" data-toggle="tab">SJF PHF FCFS</a></li>
+  <li role="presentation"><a href="#hrrf_panel" role="tab" data-toggle="tab">HRRF(高响应比)</a></li>
+  <li role="presentation"><a href="#banker_panel" role="tab" data-toggle="tab">BANKER(银行家算法)</a></li>
+</ul>
+
+
+<!-- Tab panes -->
+<div class="tab-content">
+
+
+<!-- RR时间片轮转页面 ============================= -->
+<div role="tabpanel" class="tab-pane active" id="rr_panel">
+<div class="row">
+<div class="col-sm-6">
+<table id="rr_table" class="table table-bordered">
+  <tr>
+    <th class="col-sm-4">进程</th>
+    <th class="col-sm-2">到达时间</th>
+    <th class="col-sm-2">服务时间</th>
+    <th class="col-sm-2">周转时间</th>
+    <th class="col-sm-2">带权周转</th>
+  </tr>
+  <tr><th>p0</th><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p1</th><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p2</th><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p3</th><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p4</th><td></td><td></td><td></td><td></td></tr>
+  <tr><th>平均周转时间</th><td colspan="4"></td></tr>
+  <tr><th>平均带权周转时间</th><td colspan="4"></td></tr>
+</table>
+</div><!-- ./col-sm-6  -->
+<div class="col-sm-6">
+  <button id="rr_import_btn" class="btn btn-primary btn-block">导入数据</button>
+  <button id="rr_exec_btn" class="btn btn-success btn-block">执行调度</button>
+  <textarea id="rr_textarea" class="form-control" rows="14"></textarea>
+</div><!-- ./col-sm-6  -->
+</div><!-- ./row -->
+</div><!-- ./tabpanel -->
+
+
+
+<!-- FCFS SJF PHF 页面    ======================== -->
+<div role="tabpanel" class="tab-pane" id="fcfs_panel">
+<div class="row">
+<div class="col-sm-6">
+
+<table id="fcfs_table" class="table table-bordered">
+  <tr>
+    <th class="col-sm-3">进程</th>
+    <th class="col-sm-1">到达时间</th>
+    <th class="col-sm-1">服务时间</th>
+    <th class="col-sm-1">优先级</th>
+    <th class="col-sm-1">开始执行</th>
+    <th class="col-sm-1">结束执行</th>
+    <th class="col-sm-2">周转时间</th>
+    <th class="col-sm-2">带权周转</th>
+  </tr>
+  <tr><th>p0</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p1</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p2</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p3</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p4</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>执行顺序</th><td colspan="7"></td></tr>
+  <tr><th>平均周转时间</th><td colspan="7"></td></tr>
+  <tr><th>平均带权周转时间</th><td colspan="7"></td></tr>
+</table>
+
+</div><!-- ./col-sm-6  -->
+<div class="col-sm-6">
+  <button id="fcfs_import_btn" class="btn btn-primary btn-block">导入数据</button>
+  <button id="fcfs_exec_btn" class="btn btn-success btn-block">执行FCFS</button>
+  <button id="phf_exec_btn" class="btn btn-success btn-block">执行PHF</button>
+  <button id="sjf_exec_btn" class="btn btn-success btn-block">执行SJF</button>
+  <textarea id="fcfs_textarea" class="form-control" rows="11"></textarea>
+</div><!-- ./col-sm-6  -->
+</div><!-- ./row -->
+</div><!-- ./tabpanel -->
+
+
+
+<!-- HRRF高响应比 页面   ==========================-->
+<div role="tabpanel" class="tab-pane" id="hrrf_panel">
+<div class="row">
+<div class="col-sm-6">
+
+<table id="hrrf_table" class="table table-bordered">
+  <tr>
+    <th class="col-sm-4">进程</th>
+    <th class="col-sm-1">到达时间</th>
+    <th class="col-sm-1">服务时间</th>
+    <th class="col-sm-1">开始执行</th>
+    <th class="col-sm-1">结束执行</th>
+    <th class="col-sm-2">周转时间</th>
+    <th class="col-sm-2">带权周转</th>
+  </tr>
+  <tr><th>p0</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p1</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p2</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p3</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>p4</th><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+  <tr><th>执行顺序</th><td colspan="6"></td></tr>
+  <tr><th>平均周转时间</th><td colspan="6"></td></tr>
+  <tr><th>平均带权周转时间</th><td colspan="6"></td></tr>
+</table>
+
+</div><!-- ./col-sm-6  -->
+<div class="col-sm-6">
+  <button id="hrrf_import_btn" class="btn btn-primary btn-block">导入数据</button>
+  <button id="hrrf_exec_btn" class="btn btn-success btn-block">执行调度</button>
+  <textarea id="hrrf_textarea" class="form-control" rows="14"></textarea>
+</div><!-- ./col-sm-6  -->
+</div><!-- ./row -->
+</div><!-- ./tabpanel -->
+
+
+
+<!-- BANKER银行家算法 页面 ========================= -->
+<div role="tabpanel" class="tab-pane" id="banker_panel">
+<div class="row">
+<div class="col-sm-6 bordered">
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label for="progress_num_input" class="col-sm-2 control-label">进程数</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" id="progress_num_input" placeholder="建议 3<= int <= 6">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="resource_num_input" class="col-sm-2 control-label">资源数</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" id="resource_num_input" placeholder="建议 1<= int <= 4">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="available_input" class="col-sm-2 control-label">Avaliable</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="available_input" placeholder="num1,num2, ...">
+    </div>
+  </div>
+  <hr>
+  <div class="form-group">
+    <label for="banker_demo_btn" class="col-sm-2 control-label">示例查找</label>
+    <div class="col-sm-10">
+      <button id="banker_demo_btn" type="button" class="btn btn-success btn-block">进行示例演示</button>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="banker_manual_btn" class="col-sm-2 control-label">手输查找</label>
+    <div class="col-sm-10">
+      <button id="banker_manual_btn" type="button" class="btn btn-info btn-block">手输并查找</button>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="banker_rand_btn" class="col-sm-2 control-label">随机查找</label>
+    <div class="col-sm-10">
+      <button id="banker_rand_btn" type="button" class="btn btn-primary btn-block">随机初始化并查找</button>
+    </div>
+  </div>
+  <hr>
+  <div class="form-group">
+    <label for="start_progress_input" class="col-sm-2 control-label">开始进程</label>
+    <div class="col-sm-10">
+      <input type="number" class="form-control" id="start_progress_input" placeholder="int < 总进程数">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="request_vector_input" class="col-sm-2 control-label">请求向量</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="request_vector_input" placeholder="num1,num2, ...">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="banker_request_btn" class="col-sm-2 control-label">请求资源</label>
+    <div class="col-sm-10">
+      <button id="banker_request_btn" type="button" class="btn btn-warning btn-block">请求资源</button>
+    </div>
+  </div>
+</form>
+</div> <!-- ./ col-sm-6 bordered -->
+
+<div class="col-sm-6">
+  <table id = "banker_table" class="table table-bordered">
+    <tr>
+      <th class="col-sm-4">进程</th>
+      <th class="col-sm-2">       Max</th>
+      <th class="col-sm-2">Allocation</th>
+      <th class="col-sm-2">      Need</th>
+      <th class="col-sm-2"> Available</th>
+    </tr>
+    <tr><th>p0</th><td></td><td></td><td></td><td></td></tr>
+    <tr><th>p1</th><td></td><td></td><td></td><td></td></tr>
+    <tr><th>p2</th><td></td><td></td><td></td><td></td></tr>
+    <tr><th>p3</th><td></td><td></td><td></td><td></td></tr>
+    <tr><th>p4</th><td></td><td></td><td></td><td></td></tr>
+    <tr><th>p5</th><td></td><td></td><td></td><td></td></tr>
+  </table>
+</div>
+
+<div class="col-sm-6">
+  <textarea id="banker_textarea" class="form-control" rows="10"></textarea>
+</div>
+
+</div><!-- ./row -->
+</div><!-- ./tabpanel -->
+</div><!-- ./Tab panes -->
+
+
+
+</div> <!-- ./ container -->
+
+<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="common.js"></script>
+<script src="cpu.js"></script>
+<script src="cpu-dom.js"></script>
+<script src="banker.js"></script>
+<script src="banker-dom.js"></script>
+</body>
+</html>

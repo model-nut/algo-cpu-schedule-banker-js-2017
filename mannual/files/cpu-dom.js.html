@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>cpu-dom.js</title>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
+    <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
+    <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
+    <link rel="icon" href="../assets/favicon.ico">
+    <script src="http://yui.yahooapis.com/combo?3.9.1/build/yui/yui-min.js"></script>
+</head>
+<body class="yui3-skin-sam">
+
+<div id="doc">
+    <div id="hd" class="yui3-g header">
+        <div class="yui3-u-3-4">
+                <h1><img src="../assets/css/logo.png" title="" width="117" height="52"></h1>
+        </div>
+        <div class="yui3-u-1-4 version">
+            <em>API Docs for: </em>
+        </div>
+    </div>
+    <div id="bd" class="yui3-g">
+
+        <div class="yui3-u-1-4">
+            <div id="docs-sidebar" class="sidebar apidocs">
+                <div id="api-list">
+                    <h2 class="off-left">APIs</h2>
+                    <div id="api-tabview" class="tabview">
+                        <ul class="tabs">
+                            <li><a href="#api-classes">Classes</a></li>
+                            <li><a href="#api-modules">Modules</a></li>
+                        </ul>
+                
+                        <div id="api-tabview-filter">
+                            <input type="search" id="api-filter" placeholder="Type to filter APIs">
+                        </div>
+                
+                        <div id="api-tabview-panel">
+                            <ul id="api-classes" class="apis classes">
+                                <li><a href="../classes/[banker-dom.js].html">[banker-dom.js]</a></li>
+                                <li><a href="../classes/[banker.js].html">[banker.js]</a></li>
+                                <li><a href="../classes/[common.js].html">[common.js]</a></li>
+                                <li><a href="../classes/[cpu-dom.js].html">[cpu-dom.js]</a></li>
+                                <li><a href="../classes/[cpu.js].html">[cpu.js]</a></li>
+                            </ul>
+                
+                
+                            <ul id="api-modules" class="apis modules">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="yui3-u-3-4">
+                <div id="api-options">
+                    Show:
+                    <label for="api-show-inherited">
+                        <input type="checkbox" id="api-show-inherited" checked>
+                        Inherited
+                    </label>
+            
+                    <label for="api-show-protected">
+                        <input type="checkbox" id="api-show-protected">
+                        Protected
+                    </label>
+            
+                    <label for="api-show-private">
+                        <input type="checkbox" id="api-show-private">
+                        Private
+                    </label>
+                    <label for="api-show-deprecated">
+                        <input type="checkbox" id="api-show-deprecated">
+                        Deprecated
+                    </label>
+            
+                </div>
+            
+            <div class="apidocs">
+                <div id="docs-main">
+                    <div class="content">
+<h1 class="file-heading">File: cpu-dom.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * author [luo0412]
+ * date [2016-12-21]
+ * description [cpu调度的dom操作]
+ * @class [cpu-dom.js]
+ * @constructor
+ */
+
+$(document).ready(function() {
+
+$(&quot;#rr_import_btn&quot;).click(function() {
+    resetCpuGloabalVar();
+    $(&quot;#rr_table td&quot;).html(&quot;&quot;);
+    $(&quot;#rr_textarea&quot;).html(&quot;&quot;);
+    rrDemoInit();
+
+    for(var i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#rr_table tr:eq(&quot; + (i+1) + &quot;) td:eq(0)&quot;).html(ARRIVE_TIME[i]);
+        $(&quot;#rr_table tr:eq(&quot; + (i+1) + &quot;) td:eq(1)&quot;).html(SERVICE_TIME[i]);
+    }
+});
+
+$(&quot;#rr_exec_btn&quot;).click(function() {
+    $(&quot;#rr_textarea&quot;).html(displayRREachExec(SERVICE_TIME, 3));
+});
+
+$(&quot;#fcfs_import_btn&quot;).click(function() {
+    resetCpuGloabalVar(); // 重置
+    $(&quot;#fcfs_table td&quot;).html(&quot;&quot;); // 清空表格
+    $(&quot;#fcfs_textarea&quot;).html(&quot;&quot;); // 清空文本域
+    fcfsDemoInit();       // 导入fcfs, sjf, phf公用数据
+
+    // 显示前三列数据
+    for(var i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(0)&quot;).html(ARRIVE_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(1)&quot;).html(SERVICE_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(2)&quot;).html(PRIORITY[i]);
+    }
+});
+
+$(&quot;#fcfs_exec_btn&quot;).click(function() {
+    resetCpuGloabalVar(); // 重置
+
+    $(&quot;#fcfs_table td&quot;).html(&quot;&quot;); // 清空表格
+    $(&quot;#fcfs_textarea&quot;).html(&quot;&quot;); // 清空文本域
+    fcfsDemoInit();       // 导入fcfs, sjf, phf公用数据
+
+    // 显示前三列数据
+    for(var i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(0)&quot;).html(ARRIVE_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(1)&quot;).html(SERVICE_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(2)&quot;).html(PRIORITY[i]);
+    }
+
+    fcfs(); // 已经包括了周转时间等的计算
+    for(i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(3)&quot;).html(START_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(4)&quot;).html(FINISH_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(5)&quot;).html(TURNAROUND_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(6)&quot;).html(WEIGHTED_TURNAROUND_TIME[i]);
+    }
+    $(&quot;#fcfs_table tr:eq(&quot; + 6 + &quot;) td:eq(0)&quot;).html(&quot;FCFS执行顺序：&quot; + getExecOrderStr(EXEC_ORDER));
+    $(&quot;#fcfs_table tr:eq(&quot; + 7 + &quot;) td:eq(0)&quot;).html(&quot;&quot; + getAvgValOfArr(TURNAROUND_TIME).toFixed(3));
+    $(&quot;#fcfs_table tr:eq(&quot; + 8 + &quot;) td:eq(0)&quot;).html(&quot;&quot; + getAvgValOfArr(WEIGHTED_TURNAROUND_TIME).toFixed(3));
+    $(&quot;#fcfs_textarea&quot;).html(TEXTAREA_TXT);
+});
+
+
+$(&quot;#phf_exec_btn&quot;).click(function() {
+    resetCpuGloabalVar(); // 重置
+
+    $(&quot;#fcfs_table td&quot;).html(&quot;&quot;); // 清空表格
+    $(&quot;#fcfs_textarea&quot;).html(&quot;&quot;); // 清空文本域
+    fcfsDemoInit();       // 导入fcfs, sjf, phf公用数据
+
+    // 显示前三列数据
+    for(var i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(0)&quot;).html(ARRIVE_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(1)&quot;).html(SERVICE_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(2)&quot;).html(PRIORITY[i]);
+    }
+
+    phf(); // 已经包括了周转时间等的计算
+    for(i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(3)&quot;).html(START_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(4)&quot;).html(FINISH_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(5)&quot;).html(TURNAROUND_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(6)&quot;).html(WEIGHTED_TURNAROUND_TIME[i]);
+    }
+    $(&quot;#fcfs_table tr:eq(&quot; + 6 + &quot;) td:eq(0)&quot;).html(&quot;phf执行顺序：&quot; + getExecOrderStr(EXEC_ORDER));
+    $(&quot;#fcfs_table tr:eq(&quot; + 7 + &quot;) td:eq(0)&quot;).html(&quot;&quot; + getAvgValOfArr(TURNAROUND_TIME).toFixed(3));
+    $(&quot;#fcfs_table tr:eq(&quot; + 8 + &quot;) td:eq(0)&quot;).html(&quot;&quot; + getAvgValOfArr(WEIGHTED_TURNAROUND_TIME).toFixed(3));
+    $(&quot;#fcfs_textarea&quot;).html(TEXTAREA_TXT);
+});
+
+
+$(&quot;#sjf_exec_btn&quot;).click(function(event) {
+    resetCpuGloabalVar(); // 重置
+    $(&quot;#fcfs_table td&quot;).html(&quot;&quot;); // 清空表格
+    $(&quot;#fcfs_textarea&quot;).html(&quot;&quot;); // 清空文本域
+    fcfsDemoInit();       // 导入fcfs, sjf, phf公用数据
+
+    // 显示前三列数据
+    for(var i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(0)&quot;).html(ARRIVE_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(1)&quot;).html(SERVICE_TIME[i]);
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(2)&quot;).html(PRIORITY[i]);
+    }
+
+    // sjfDemoInit(); // 导入初始化数据
+    sjfLauncher(); // 启动sjf抢占式调度
+
+    // 计算周转时间和带权周转时间
+    TURNAROUND_TIME = getSubArr(FINISH_TIME, ARRIVE_TIME);
+    WEIGHTED_TURNAROUND_TIME = getDivArr(getSubArr(FINISH_TIME, ARRIVE_TIME), SERVICE_TIME);
+
+    // 显示起止时间,周转时间等
+    for(i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(3)&quot;).html(START_TIME[i].toString());
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(4)&quot;).html(FINISH_TIME[i].toString());
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(5)&quot;).html(TURNAROUND_TIME[i].toString());
+        $(&quot;#fcfs_table tr:eq(&quot; + (i+1) + &quot;) td:eq(6)&quot;).html(WEIGHTED_TURNAROUND_TIME[i].toString());
+    }
+
+    $(&quot;#fcfs_table tr:eq(&quot; + 6 + &quot;) td:eq(0)&quot;).html(&quot;sjf执行顺序：&quot; + getExecOrderStr(EXEC_ORDER));
+                    // 输出执行顺序,包含去重
+
+    // 显示平均周转时间和平均带权周转时间
+    $(&quot;#fcfs_table tr:eq(&quot; + 7 + &quot;) td:eq(0)&quot;).html(getAvgValOfArr(TURNAROUND_TIME));
+    $(&quot;#fcfs_table tr:eq(&quot; + 8 + &quot;) td:eq(0)&quot;).html(getAvgValOfArr(WEIGHTED_TURNAROUND_TIME));
+
+    // 计算等待时间和平均等待时间
+    var tmpArr3 = getSubArr(getSubArr(FINISH_TIME, SERVICE_TIME), ARRIVE_TIME);
+    TEXTAREA_TXT += &quot;等待时间&quot; + tmpArr3 + &quot;\n&quot;;
+    TEXTAREA_TXT += &quot;平均等待时间&quot; + getAvgValOfArr(tmpArr3) + &quot;\n&quot;;
+
+    $(&quot;#fcfs_textarea&quot;).html(TEXTAREA_TXT); // 输出执行过程情况
+});
+
+
+$(&quot;#hrrf_import_btn&quot;).click(function() {
+    resetCpuGloabalVar(); // 重置
+    $(&quot;#hrrf_table td&quot;).html(&quot;&quot;); // 清空表格
+    $(&quot;#hrrf_textarea&quot;).html(&quot;&quot;); // 清空文本域
+    hrrfDemoInit();
+
+    // 显示前两列数据
+    for(var i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#hrrf_table tr:eq(&quot; + (i+1) + &quot;) td:eq(0)&quot;).html(ARRIVE_TIME[i]);
+        $(&quot;#hrrf_table tr:eq(&quot; + (i+1) + &quot;) td:eq(1)&quot;).html(SERVICE_TIME[i]);
+    }
+});
+
+$(&quot;#hrrf_exec_btn&quot;).click(function() {
+    hrrf();
+    TURNAROUND_TIME = arrParseFloat(arrToFixedN(getSubArr(FINISH_TIME, ARRIVE_TIME), 1));
+    WEIGHTED_TURNAROUND_TIME = getDivArr(TURNAROUND_TIME, SERVICE_TIME);
+    for(var i=0; i&lt;PROGRESS_NUM; i++) {
+        $(&quot;#hrrf_table tr:eq(&quot; + (i+1) + &quot;) td:eq(2)&quot;).html(START_TIME[i]);
+        $(&quot;#hrrf_table tr:eq(&quot; + (i+1) + &quot;) td:eq(3)&quot;).html(FINISH_TIME[i]);
+        $(&quot;#hrrf_table tr:eq(&quot; + (i+1) + &quot;) td:eq(4)&quot;).html(TURNAROUND_TIME[i]);
+        $(&quot;#hrrf_table tr:eq(&quot; + (i+1) + &quot;) td:eq(5)&quot;).html(WEIGHTED_TURNAROUND_TIME[i]);
+    }
+
+    $(&quot;#hrrf_table tr:eq(&quot; + 6 + &quot;) td:eq(0)&quot;).html(&quot;HRRF执行顺序：&quot; + getExecOrderStr(EXEC_ORDER));
+    $(&quot;#hrrf_table tr:eq(&quot; + 7 + &quot;) td:eq(0)&quot;).html(&quot;&quot; + getAvgValOfArr(TURNAROUND_TIME).toFixed(3) );
+    $(&quot;#hrrf_table tr:eq(&quot; + 8 + &quot;) td:eq(0)&quot;).html(&quot;&quot; + getAvgValOfArr(WEIGHTED_TURNAROUND_TIME).toFixed(3) );
+    $(&quot;#hrrf_textarea&quot;).html(TEXTAREA_TXT);
+});
+
+}); // jquery end
+    </pre>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../assets/vendor/prettify/prettify-min.js"></script>
+<script>prettyPrint();</script>
+<script src="../assets/js/yui-prettify.js"></script>
+<script src="../assets/../api.js"></script>
+<script src="../assets/js/api-filter.js"></script>
+<script src="../assets/js/api-list.js"></script>
+<script src="../assets/js/api-search.js"></script>
+<script src="../assets/js/apidocs.js"></script>
+</body>
+</html>
